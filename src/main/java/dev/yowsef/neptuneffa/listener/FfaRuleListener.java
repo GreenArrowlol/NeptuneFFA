@@ -334,8 +334,8 @@ public class FfaRuleListener implements Listener {
 
         String cmd = event.getMessage().toLowerCase().trim();
 
-        // Handle /leave command to cleanly leave FFA
-        if (cmd.startsWith("/leave")) {
+        // Handle /leave or /spawn commands to cleanly leave FFA
+        if (cmd.startsWith("/leave") || cmd.startsWith("/spawn")) {
             FfaSession session = getSession(player);
             if (session != null) {
                 FfaParticipant p = session.getParticipant(player.getUniqueId());
