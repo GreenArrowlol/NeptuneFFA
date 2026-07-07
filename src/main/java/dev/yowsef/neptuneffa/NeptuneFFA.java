@@ -14,6 +14,7 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bstats.bukkit.Metrics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,10 @@ public class NeptuneFFA extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+
+        // Initialize bStats Metrics
+        int pluginId = 32452;
+        new Metrics(this, pluginId);
 
         // Load configs
         FfaConfig.get();
