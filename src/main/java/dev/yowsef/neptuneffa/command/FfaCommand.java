@@ -60,6 +60,11 @@ public class FfaCommand implements TabExecutor {
                     sendMessage(player, MessagesConfig.FFA_NOT_IN_FFA);
                     return true;
                 }
+                dev.yowsef.neptuneffa.session.FfaParticipant participant = currentSession.getParticipant(player.getUniqueId());
+                if (participant != null && participant.isCombatTagged() && !player.hasPermission("neptuneffa.admin")) {
+                    sendMessage(player, "&cYou cannot leave while in combat!");
+                    return true;
+                }
                 currentSession.removePlayer(player.getUniqueId(), "&cYou left FFA.", true);
                 break;
             case "list":

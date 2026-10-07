@@ -72,6 +72,12 @@ public class FfaKitButton extends Button {
             session.addPlayer(player);
         } else if (clickType.isRightClick() && playing) {
             player.closeInventory();
+            // same rule as the command block, no leaving mid fight through the menu
+            dev.yowsef.neptuneffa.session.FfaParticipant participant = session.getParticipant(player.getUniqueId());
+            if (participant.isCombatTagged() && !player.hasPermission("neptuneffa.admin")) {
+                FormatUtil.sendMessage(player, "&cYou cannot leave while in combat!");
+                return;
+            }
             session.removePlayer(player.getUniqueId(), "&cYou left FFA.", true);
         }
     }

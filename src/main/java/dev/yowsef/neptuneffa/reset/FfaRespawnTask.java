@@ -6,6 +6,7 @@ import dev.yowsef.neptuneffa.session.SpawnPointService;
 import lombok.AllArgsConstructor;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -13,6 +14,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class FfaRespawnTask extends BukkitRunnable {
     private final FfaSession session;
     private final Player player;
+    // the participant this countdown belongs to. if the player leaves and joins again
+    // they get a new participant and this task must not touch them anymore
+    private final FfaParticipant owner;
     private int countdown;
 
     @Override
@@ -24,9 +28,9 @@ public class FfaRespawnTask extends BukkitRunnable {
 
         // Re-fetch participant each tick
         FfaParticipant participant = session.getParticipant(player.getUniqueId());
-        if (participant == null) {
+        if (participant != owner) {
             // Player was removed (disconnect/leave) — clean up spectator mode if still online
-            if (player.getGameMode() == GameMode.SPECTATOR) {
+            if (participant == null && player.getGameMode() == GameMode.SPECTATOR) {
                 player.setGameMode(GameMode.ADVENTURE);
             }
             cancel();
@@ -42,7 +46,8 @@ public class FfaRespawnTask extends BukkitRunnable {
         } else {
             player.setGameMode(GameMode.SURVIVAL);
             // Teleport to spawn
-            player.teleport(SpawnPointService.get().getSpawn(session.getSettings(), session.getCachedRandomSpawns()));
+            Location spawn = SpawnPointService.get().getSpawn(session.getSettings(), session.getCachedRandomSpawns());
+            if (spawn != null) player.teleport(spawn);
             session.getKit().giveLoadout(player.getUniqueId());
             dev.yowsef.neptuneffa.API.applyShieldPatterns(dev.yowsef.neptuneffa.API.getProfile(player.getUniqueId()), player);
 
