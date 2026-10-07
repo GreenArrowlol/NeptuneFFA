@@ -82,7 +82,7 @@ public class FfaCommand implements TabExecutor {
                         sendMessage(player, "&cYou do not have permission to view others' stats.");
                         return true;
                     }
-                    target = org.bukkit.Bukkit.getPlayer(args[1]);
+                    target = org.bukkit.Bukkit.getPlayerExact(args[1]);
                     if (target == null) {
                         sendMessage(player, "&cPlayer not found.");
                         return true;
