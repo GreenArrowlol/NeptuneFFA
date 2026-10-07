@@ -4,11 +4,14 @@ import dev.lrxh.api.arena.IArena;
 import dev.lrxh.api.kit.IKit;
 import dev.yowsef.neptuneffa.API;
 import dev.yowsef.neptuneffa.NeptuneFFA;
+import dev.yowsef.neptuneffa.config.MessagesConfig;
 import dev.yowsef.neptuneffa.session.FfaParticipant;
 import dev.yowsef.neptuneffa.session.FfaSession;
 import dev.yowsef.neptuneffa.session.FfaSessionService;
 import dev.yowsef.neptuneffa.session.SpawnPointService;
+import dev.yowsef.neptuneffa.util.FormatUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.AreaEffectCloud;
@@ -164,7 +167,7 @@ public class FfaRuleListener implements Listener {
         if (event.getBlock().getType() == Material.TNT && API.kitIs(session.getKit(), "autoIgnite")) {
             event.setCancelled(true);
             // cancelling the place gives the item back, so take one tnt ourselves (same as neptune does in matches)
-            if (player.getGameMode() != org.bukkit.GameMode.CREATIVE) {
+            if (player.getGameMode() != GameMode.CREATIVE) {
                 ItemStack hand = player.getInventory().getItem(event.getHand());
                 if (hand.getType() == Material.TNT) {
                     hand.setAmount(hand.getAmount() - 1);
@@ -361,14 +364,14 @@ public class FfaRuleListener implements Listener {
         FfaParticipant p = session.getParticipant(player.getUniqueId());
         if (p != null && p.isCombatTagged() && !player.hasPermission("neptuneffa.admin")) {
             event.setCancelled(true);
-            dev.yowsef.neptuneffa.util.FormatUtil.sendMessage(player, dev.yowsef.neptuneffa.config.MessagesConfig.COMBAT_NO_COMMANDS);
+            FormatUtil.sendMessage(player, MessagesConfig.COMBAT_NO_COMMANDS);
             return;
         }
 
         // Handle /leave or /spawn commands to cleanly leave FFA
         if (label.equals("/leave") || label.equals("/spawn")) {
             event.setCancelled(true);
-            session.removePlayer(player.getUniqueId(), dev.yowsef.neptuneffa.config.MessagesConfig.FFA_LEFT, true);
+            session.removePlayer(player.getUniqueId(), MessagesConfig.FFA_LEFT, true);
         }
     }
 

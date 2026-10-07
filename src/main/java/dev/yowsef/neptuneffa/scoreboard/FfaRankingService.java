@@ -1,5 +1,7 @@
 package dev.yowsef.neptuneffa.scoreboard;
 
+import dev.yowsef.neptuneffa.NeptuneFFA;
+import dev.yowsef.neptuneffa.config.FfaStatsManager;
 import org.bukkit.Bukkit;
 
 import java.util.*;
@@ -20,9 +22,9 @@ public class FfaRankingService {
     // Fill the leaderboards from stats.yml on startup. before this rank/top killer only knew about
     // kills made since the last restart (rank showed #-1 for everyone after a reboot)
     public void loadAll() {
-        Bukkit.getScheduler().runTaskAsynchronously(dev.yowsef.neptuneffa.NeptuneFFA.getInstance(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(NeptuneFFA.getInstance(), () -> {
             Map<String, List<RankEntry>> loaded = new HashMap<>();
-            dev.yowsef.neptuneffa.config.FfaStatsManager.get().forEachKills((uuid, kitName, kills) -> {
+            FfaStatsManager.get().forEachKills((uuid, kitName, kills) -> {
                 if (kills <= 0) return;
                 String name = Bukkit.getOfflinePlayer(uuid).getName();
                 if (name == null) return;
@@ -43,8 +45,8 @@ public class FfaRankingService {
     }
 
     public void update(UUID uuid, String kitName) {
-        Bukkit.getScheduler().runTaskAsynchronously(dev.yowsef.neptuneffa.NeptuneFFA.getInstance(), () -> {
-            int kills = dev.yowsef.neptuneffa.config.FfaStatsManager.get().getStats(uuid, kitName).getKills();
+        Bukkit.getScheduler().runTaskAsynchronously(NeptuneFFA.getInstance(), () -> {
+            int kills = FfaStatsManager.get().getStats(uuid, kitName).getKills();
             org.bukkit.OfflinePlayer op = Bukkit.getOfflinePlayer(uuid);
             String name = op.getName();
             if (name == null) return;

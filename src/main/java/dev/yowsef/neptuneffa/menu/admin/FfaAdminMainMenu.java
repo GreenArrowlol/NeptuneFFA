@@ -1,7 +1,9 @@
 package dev.yowsef.neptuneffa.menu.admin;
 
 import dev.yowsef.neptuneffa.config.FfaConfig;
+import dev.yowsef.neptuneffa.config.MessagesConfig;
 import dev.yowsef.neptuneffa.session.FfaSessionService;
+import dev.yowsef.neptuneffa.util.FormatUtil;
 import dev.yowsef.neptuneffa.util.ItemBuilder;
 import dev.yowsef.neptuneffa.util.menu.Button;
 import dev.yowsef.neptuneffa.util.menu.Menu;
@@ -68,9 +70,9 @@ public class FfaAdminMainMenu extends Menu {
                 Menu.closeAll();
                 FfaConfig.get().reload();
                 // messages were only reloaded by the command, not this button
-                dev.yowsef.neptuneffa.config.MessagesConfig.load();
+                MessagesConfig.load();
                 FfaSessionService.getInstance().rebuildAll();
-                dev.yowsef.neptuneffa.util.FormatUtil.sendMessage(p, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_RELOADED);
+                FormatUtil.sendMessage(p, MessagesConfig.ADMIN_RELOADED);
             }
         });
 

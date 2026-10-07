@@ -4,8 +4,10 @@ import dev.lrxh.api.kit.IKit;
 import dev.yowsef.neptuneffa.API;
 import dev.yowsef.neptuneffa.config.FfaConfig;
 import dev.yowsef.neptuneffa.config.KitFfaSettings;
+import dev.yowsef.neptuneffa.config.MessagesConfig;
 import dev.yowsef.neptuneffa.session.FfaSession;
 import dev.yowsef.neptuneffa.session.FfaSessionService;
+import dev.yowsef.neptuneffa.util.menu.Menu;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -20,7 +22,7 @@ public class FfaAdminCommand implements TabExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.hasPermission("neptuneffa.admin")) {
-            sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_NO_PERMISSION);
+            sendMessage(sender, MessagesConfig.ADMIN_NO_PERMISSION);
             return true;
         }
 
@@ -28,7 +30,7 @@ public class FfaAdminCommand implements TabExecutor {
             if (sender instanceof Player player) {
                 new dev.yowsef.neptuneffa.menu.admin.FfaAdminMainMenu().open(player);
             } else {
-                sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_USAGE);
+                sendMessage(sender, MessagesConfig.ADMIN_USAGE);
             }
             return true;
         }
@@ -37,49 +39,49 @@ public class FfaAdminCommand implements TabExecutor {
             case "menu":
             case "gui":
                 if (!(sender instanceof Player player)) {
-                    sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.PLAYERS_ONLY);
+                    sendMessage(sender, MessagesConfig.PLAYERS_ONLY);
                     return true;
                 }
                 new dev.yowsef.neptuneffa.menu.admin.FfaAdminMainMenu().open(player);
                 break;
             case "reload":
-                dev.yowsef.neptuneffa.util.menu.Menu.closeAll();
+                Menu.closeAll();
                 FfaConfig.get().reload();
-                dev.yowsef.neptuneffa.config.MessagesConfig.load();
+                MessagesConfig.load();
                 FfaSessionService.getInstance().rebuildAll();
-                sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_RELOADED);
+                sendMessage(sender, MessagesConfig.ADMIN_RELOADED);
                 break;
             case "reset":
                 if (args.length < 2) {
-                    sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_RESET_USAGE);
+                    sendMessage(sender, MessagesConfig.ADMIN_RESET_USAGE);
                     return true;
                 }
                 FfaSession session = FfaSessionService.getInstance().getSession(args[1]);
                 if (session != null && session.getResetTask() != null) {
                     session.getResetTask().setSecondsRemaining(0);
-                    sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_RESET_FORCED.replace("{kit}", args[1]));
+                    sendMessage(sender, MessagesConfig.ADMIN_RESET_FORCED.replace("{kit}", args[1]));
                 } else {
-                    sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_NO_ACTIVE_SESSION.replace("{kit}", args[1]));
+                    sendMessage(sender, MessagesConfig.ADMIN_NO_ACTIVE_SESSION.replace("{kit}", args[1]));
                 }
                 break;
             case "addspawn":
                 if (!(sender instanceof Player player)) {
-                    sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.PLAYERS_ONLY);
+                    sendMessage(sender, MessagesConfig.PLAYERS_ONLY);
                     return true;
                 }
                 if (args.length < 2) {
-                    sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_ADDSPAWN_USAGE);
+                    sendMessage(sender, MessagesConfig.ADMIN_ADDSPAWN_USAGE);
                     return true;
                 }
                 if (!API.isAvailable()) {
-                    sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.NEPTUNE_UNAVAILABLE);
+                    sendMessage(sender, MessagesConfig.NEPTUNE_UNAVAILABLE);
                     return true;
                 }
                 IKit kit = API.get().getKitService().getAllKits().stream()
                         .filter(k -> k.getName().equalsIgnoreCase(args[1]))
                         .findFirst().orElse(null);
                 if (kit == null) {
-                    sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_KIT_NOT_FOUND);
+                    sendMessage(sender, MessagesConfig.ADMIN_KIT_NOT_FOUND);
                     return true;
                 }
                 KitFfaSettings settings = FfaConfig.get().getOrCreateKitSettings(kit);
@@ -87,35 +89,35 @@ public class FfaAdminCommand implements TabExecutor {
                 // Invalidate spawn cache
                 settings.invalidateSpawnCache();
                 FfaConfig.get().saveKits();
-                sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_SPAWN_ADDED_KIT.replace("{kit}", kit.getName()));
+                sendMessage(sender, MessagesConfig.ADMIN_SPAWN_ADDED_KIT.replace("{kit}", kit.getName()));
                 break;
             case "captureschematic":
                 if (args.length < 2) {
-                    sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_CAPTURE_USAGE);
+                    sendMessage(sender, MessagesConfig.ADMIN_CAPTURE_USAGE);
                     return true;
                 }
                 if (!API.isAvailable()) {
-                    sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.NEPTUNE_UNAVAILABLE);
+                    sendMessage(sender, MessagesConfig.NEPTUNE_UNAVAILABLE);
                     return true;
                 }
                 IKit schematicKit = API.get().getKitService().getAllKits().stream()
                         .filter(k -> k.getName().equalsIgnoreCase(args[1]))
                         .findFirst().orElse(null);
                 if (schematicKit == null) {
-                    sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_KIT_NOT_FOUND);
+                    sendMessage(sender, MessagesConfig.ADMIN_KIT_NOT_FOUND);
                     return true;
                 }
                 KitFfaSettings schematicSettings = FfaConfig.get().getOrCreateKitSettings(schematicKit);
                 dev.lrxh.api.arena.IArena schematicArena = schematicSettings.resolveArena();
                 if (schematicArena == null || !schematicArena.isSetup() || !schematicArena.isEnabled()) {
-                    sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_ARENA_NOT_READY);
+                    sendMessage(sender, MessagesConfig.ADMIN_ARENA_NOT_READY);
                     return true;
                 }
                 dev.yowsef.neptuneffa.util.FfaArenaRestorer.captureAndSave(schematicArena);
-                sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_CAPTURING.replace("{arena}", schematicArena.getName()));
+                sendMessage(sender, MessagesConfig.ADMIN_CAPTURING.replace("{arena}", schematicArena.getName()));
                 break;
             default:
-                sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_UNKNOWN_SUBCOMMAND);
+                sendMessage(sender, MessagesConfig.ADMIN_UNKNOWN_SUBCOMMAND);
                 break;
         }
 

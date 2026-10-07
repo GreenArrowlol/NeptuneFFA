@@ -4,8 +4,10 @@ import dev.lrxh.api.kit.IKit;
 import dev.yowsef.neptuneffa.API;
 import dev.yowsef.neptuneffa.config.MessagesConfig;
 import dev.yowsef.neptuneffa.menu.player.FfaKitSelectorMenu;
+import dev.yowsef.neptuneffa.session.FfaParticipant;
 import dev.yowsef.neptuneffa.session.FfaSession;
 import dev.yowsef.neptuneffa.session.FfaSessionService;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -60,7 +62,7 @@ public class FfaCommand implements TabExecutor {
                     sendMessage(player, MessagesConfig.FFA_NOT_IN_FFA);
                     return true;
                 }
-                dev.yowsef.neptuneffa.session.FfaParticipant participant = currentSession.getParticipant(player.getUniqueId());
+                FfaParticipant participant = currentSession.getParticipant(player.getUniqueId());
                 if (participant != null && participant.isCombatTagged() && !player.hasPermission("neptuneffa.admin")) {
                     sendMessage(player, MessagesConfig.COMBAT_NO_LEAVE);
                     return true;
@@ -84,7 +86,7 @@ public class FfaCommand implements TabExecutor {
                         sendMessage(player, MessagesConfig.STATS_NO_PERMISSION);
                         return true;
                     }
-                    target = org.bukkit.Bukkit.getPlayerExact(args[1]);
+                    target = Bukkit.getPlayerExact(args[1]);
                     if (target == null) {
                         sendMessage(player, MessagesConfig.PLAYER_NOT_FOUND);
                         return true;
@@ -136,7 +138,7 @@ public class FfaCommand implements TabExecutor {
                         .toList();
                 org.bukkit.util.StringUtil.copyPartialMatches(args[1], kits, completions);
             } else if (args[0].equalsIgnoreCase("stats") && sender.hasPermission("neptuneffa.stats.others")) {
-                java.util.List<String> players = org.bukkit.Bukkit.getOnlinePlayers().stream()
+                java.util.List<String> players = Bukkit.getOnlinePlayers().stream()
                         .map(org.bukkit.entity.Player::getName)
                         .toList();
                 org.bukkit.util.StringUtil.copyPartialMatches(args[1], players, completions);

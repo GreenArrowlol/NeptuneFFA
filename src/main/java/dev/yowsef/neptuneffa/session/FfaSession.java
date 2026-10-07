@@ -16,6 +16,9 @@ import dev.yowsef.neptuneffa.scoreboard.FfaRankingService;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 import dev.yowsef.neptuneffa.util.FfaArenaRestorer;
 import dev.yowsef.neptuneffa.util.FormatUtil;
@@ -86,7 +89,7 @@ public class FfaSession {
                 && FfaArenaRestorer.isFaweAvailable() && FfaArenaRestorer.getSchematicFile(arena.getName()).exists());
         if (!restoredElsewhere) {
             for (Location loc : placedBlocks) {
-                if (loc.getWorld() != null) loc.getBlock().setType(org.bukkit.Material.AIR, false);
+                if (loc.getWorld() != null) loc.getBlock().setType(Material.AIR, false);
             }
         }
         placedBlocks.clear();
@@ -301,7 +304,7 @@ public class FfaSession {
     }
 
     public static double getMaxHealth(Player player) {
-        org.bukkit.attribute.AttributeInstance maxHealthAttr = player.getAttribute(org.bukkit.attribute.Attribute.MAX_HEALTH);
+        AttributeInstance maxHealthAttr = player.getAttribute(Attribute.MAX_HEALTH);
         return maxHealthAttr != null ? maxHealthAttr.getValue() : 20.0;
     }
 

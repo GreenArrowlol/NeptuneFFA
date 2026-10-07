@@ -9,6 +9,8 @@ import dev.yowsef.neptuneffa.config.MessagesConfig;
 import dev.yowsef.neptuneffa.session.FfaParticipant;
 import dev.yowsef.neptuneffa.session.FfaSession;
 import dev.yowsef.neptuneffa.session.FfaSessionService;
+import dev.yowsef.neptuneffa.util.FormatUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -33,7 +35,7 @@ public class FfaPlayerListener implements Listener {
         // Goes through the same recordDeath as a normal kill so neptune kit data / persistent data get it too
         if (p != null && p.isCombatTagged() && !p.isInRespawnCountdown()) {
             Player killer = p.getValidAttacker() != null
-                    ? org.bukkit.Bukkit.getPlayer(p.getValidAttacker()) : null;
+                    ? Bukkit.getPlayer(p.getValidAttacker()) : null;
 
             if (killer != null && session.getParticipant(killer.getUniqueId()) != null) {
                 session.recordDeath(p, killer);
@@ -50,7 +52,7 @@ public class FfaPlayerListener implements Listener {
         IProfile profile = API.getProfile(player.getUniqueId());
         if (profile != null && profile.hasState("IN_FFA")) {
             event.setCancelled(true);
-            dev.yowsef.neptuneffa.util.FormatUtil.sendMessage(player, MessagesConfig.FFA_CANT_QUEUE);
+            FormatUtil.sendMessage(player, MessagesConfig.FFA_CANT_QUEUE);
         }
     }
 
@@ -60,7 +62,7 @@ public class FfaPlayerListener implements Listener {
     public void onMatchReady(MatchReadyEvent event) {
         List<Player> inFfa = new ArrayList<>();
         for (IParticipant participant : event.getMatch().getParticipants()) {
-            Player player = org.bukkit.Bukkit.getPlayer(participant.getPlayerUUID());
+            Player player = Bukkit.getPlayer(participant.getPlayerUUID());
             if (player != null && FfaSessionService.getInstance().getSession(player) != null) {
                 inFfa.add(player);
             }
@@ -69,9 +71,9 @@ public class FfaPlayerListener implements Listener {
 
         event.setCancelled(true);
         for (IParticipant participant : event.getMatch().getParticipants()) {
-            Player player = org.bukkit.Bukkit.getPlayer(participant.getPlayerUUID());
+            Player player = Bukkit.getPlayer(participant.getPlayerUUID());
             if (player == null) continue;
-            dev.yowsef.neptuneffa.util.FormatUtil.sendMessage(player,
+            FormatUtil.sendMessage(player,
                     inFfa.contains(player) ? MessagesConfig.FFA_CANT_DUEL : MessagesConfig.FFA_TARGET_IN_FFA);
         }
     }
@@ -91,7 +93,7 @@ public class FfaPlayerListener implements Listener {
         if (label.equals("queue") || label.equals("quickqueue")) {
             if (FfaSessionService.getInstance().getSession(player) != null) {
                 event.setCancelled(true);
-                dev.yowsef.neptuneffa.util.FormatUtil.sendMessage(player, MessagesConfig.FFA_CANT_QUEUE);
+                FormatUtil.sendMessage(player, MessagesConfig.FFA_CANT_QUEUE);
                 return;
             }
         }
@@ -100,7 +102,7 @@ public class FfaPlayerListener implements Listener {
             // Check if sender is in FFA
             if (FfaSessionService.getInstance().getSession(player) != null) {
                 event.setCancelled(true);
-                dev.yowsef.neptuneffa.util.FormatUtil.sendMessage(player, MessagesConfig.FFA_CANT_DUEL);
+                FormatUtil.sendMessage(player, MessagesConfig.FFA_CANT_DUEL);
                 return;
             }
 
@@ -111,10 +113,10 @@ public class FfaPlayerListener implements Listener {
                     if (parts.length > 2) {
                         try {
                             java.util.UUID senderUuid = java.util.UUID.fromString(parts[2]);
-                            Player sender = org.bukkit.Bukkit.getPlayer(senderUuid);
+                            Player sender = Bukkit.getPlayer(senderUuid);
                             if (sender != null && FfaSessionService.getInstance().getSession(sender) != null) {
                                 event.setCancelled(true);
-                                dev.yowsef.neptuneffa.util.FormatUtil.sendMessage(player, MessagesConfig.FFA_TARGET_IN_FFA);
+                                FormatUtil.sendMessage(player, MessagesConfig.FFA_TARGET_IN_FFA);
                                 return;
                             }
                         } catch (IllegalArgumentException ignored) {}
@@ -122,19 +124,19 @@ public class FfaPlayerListener implements Listener {
                 } else if (sub.equals("specific")) {
                     // Format: /duel specific <player> <kit> <rounds>
                     if (parts.length > 2) {
-                        Player target = org.bukkit.Bukkit.getPlayerExact(parts[2]);
+                        Player target = Bukkit.getPlayerExact(parts[2]);
                         if (target != null && FfaSessionService.getInstance().getSession(target) != null) {
                             event.setCancelled(true);
-                            dev.yowsef.neptuneffa.util.FormatUtil.sendMessage(player, MessagesConfig.FFA_TARGET_IN_FFA);
+                            FormatUtil.sendMessage(player, MessagesConfig.FFA_TARGET_IN_FFA);
                             return;
                         }
                     }
                 } else {
                     // Format: /duel <player>
-                    Player target = org.bukkit.Bukkit.getPlayerExact(parts[1]);
+                    Player target = Bukkit.getPlayerExact(parts[1]);
                     if (target != null && FfaSessionService.getInstance().getSession(target) != null) {
                         event.setCancelled(true);
-                        dev.yowsef.neptuneffa.util.FormatUtil.sendMessage(player, MessagesConfig.FFA_TARGET_IN_FFA);
+                        FormatUtil.sendMessage(player, MessagesConfig.FFA_TARGET_IN_FFA);
                         return;
                     }
                 }
