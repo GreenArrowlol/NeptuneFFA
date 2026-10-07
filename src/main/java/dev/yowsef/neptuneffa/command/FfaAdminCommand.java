@@ -43,6 +43,7 @@ public class FfaAdminCommand implements TabExecutor {
                 new dev.yowsef.neptuneffa.menu.admin.FfaAdminMainMenu().open(player);
                 break;
             case "reload":
+                dev.yowsef.neptuneffa.util.menu.Menu.closeAll();
                 FfaConfig.get().reload();
                 dev.yowsef.neptuneffa.config.MessagesConfig.load();
                 FfaSessionService.getInstance().rebuildAll();

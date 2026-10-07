@@ -3,8 +3,8 @@ package dev.yowsef.neptuneffa.reset;
 import dev.yowsef.neptuneffa.session.FfaParticipant;
 import dev.yowsef.neptuneffa.session.FfaSession;
 import dev.yowsef.neptuneffa.session.SpawnPointService;
+import dev.yowsef.neptuneffa.config.MessagesConfig;
 import lombok.AllArgsConstructor;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -40,7 +40,8 @@ public class FfaRespawnTask extends BukkitRunnable {
         participant.setInRespawnCountdown(true);
 
         if (countdown > 0) {
-            player.sendTitle("", ChatColor.GRAY + "Respawning in " + ChatColor.YELLOW + countdown + ChatColor.GRAY + "...", 0, 25, 0);
+            // ffa-respawn from messages.yml was loaded but never used, the title was hardcoded
+            player.sendTitle("", MessagesConfig.FFA_RESPAWN.replace("{seconds}", String.valueOf(countdown)), 0, 25, 0);
             player.setGameMode(GameMode.SPECTATOR);
             countdown--;
         } else {

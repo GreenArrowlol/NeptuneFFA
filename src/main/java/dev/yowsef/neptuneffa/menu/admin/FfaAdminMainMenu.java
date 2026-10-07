@@ -58,16 +58,19 @@ public class FfaAdminMainMenu extends Menu {
             public ItemStack getItemStack(Player p) {
                 return new ItemBuilder(Material.PAPER)
                         .name("&aReload Config")
-                        .lore("&7Hot-reload config.yml and kits.yml.")
+                        .lore("&7Hot-reload config.yml, kits.yml and messages.yml.")
                         .build();
             }
 
             @Override
             public void onClick(Player p, ClickType clickType) {
+                p.closeInventory();
+                Menu.closeAll();
                 FfaConfig.get().reload();
+                // messages were only reloaded by the command, not this button
+                dev.yowsef.neptuneffa.config.MessagesConfig.load();
                 FfaSessionService.getInstance().rebuildAll();
                 p.sendMessage("§aConfig and sessions reloaded.");
-                p.closeInventory();
             }
         });
 
