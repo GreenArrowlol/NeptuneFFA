@@ -70,7 +70,7 @@ public class FfaAdminMainMenu extends Menu {
                 // messages were only reloaded by the command, not this button
                 dev.yowsef.neptuneffa.config.MessagesConfig.load();
                 FfaSessionService.getInstance().rebuildAll();
-                p.sendMessage("§aConfig and sessions reloaded.");
+                dev.yowsef.neptuneffa.util.FormatUtil.sendMessage(p, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_RELOADED);
             }
         });
 

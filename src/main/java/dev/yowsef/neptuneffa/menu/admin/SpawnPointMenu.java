@@ -45,7 +45,7 @@ public class SpawnPointMenu extends PaginatedMenu {
                 // Invalidate spawn cache
                 settings.invalidateSpawnCache();
                 FfaConfig.get().saveKits();
-                dev.yowsef.neptuneffa.util.FormatUtil.sendMessage(p, "&aSpawn point added.");
+                dev.yowsef.neptuneffa.util.FormatUtil.sendMessage(p, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_SPAWN_ADDED);
                 open(p); // Refresh
             }
         });
@@ -79,13 +79,13 @@ public class SpawnPointMenu extends PaginatedMenu {
                 public void onClick(Player p, ClickType clickType) {
                     if (clickType.isLeftClick()) {
                         p.teleport(loc);
-                        dev.yowsef.neptuneffa.util.FormatUtil.sendMessage(p, "&aTeleported to spawn #" + (listIndex + 1));
+                        dev.yowsef.neptuneffa.util.FormatUtil.sendMessage(p, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_SPAWN_TELEPORTED.replace("{number}", String.valueOf(listIndex + 1)));
                     } else if (clickType.isRightClick()) {
                         rawSpawns.remove(listIndex);
                         // Invalidate spawn cache
                         settings.invalidateSpawnCache();
                         FfaConfig.get().saveKits();
-                        dev.yowsef.neptuneffa.util.FormatUtil.sendMessage(p, "&cSpawn point removed.");
+                        dev.yowsef.neptuneffa.util.FormatUtil.sendMessage(p, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_SPAWN_REMOVED);
                         open(p);
                     }
                 }

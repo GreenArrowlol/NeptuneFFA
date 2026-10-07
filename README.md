@@ -127,6 +127,7 @@ ffa-no-session:  "&cNo FFA session is open for that kit."
 ffa-not-in-ffa:  "&cYou are not in an FFA session."
 ffa-already-in:  "&cYou are already in an FFA session."
 ```
+Thats just the main ones, every chat message the plugin sends is in this file (combat tag, /ffa, /ffaadmin, admin menus) and so is the text on the /ffa kit items. Placeholders like `{kit}` `{player}` work where the default text uses them. New keys get added to your file automatically on update.
 
 ---
 

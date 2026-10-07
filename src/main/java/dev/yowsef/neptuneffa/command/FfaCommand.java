@@ -20,7 +20,7 @@ public class FfaCommand implements TabExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player player)) {
-            sendMessage(sender, "This command is for players only.");
+            sendMessage(sender, MessagesConfig.PLAYERS_ONLY);
             return true;
         }
 
@@ -32,13 +32,13 @@ public class FfaCommand implements TabExecutor {
         switch (args[0].toLowerCase()) {
             case "join":
                 if (args.length < 2) {
-                    sendMessage(player, "&cUsage: /ffa join <kit>");
+                    sendMessage(player, MessagesConfig.FFA_JOIN_USAGE);
                     return true;
                 }
 
                 dev.lrxh.api.profile.IProfile joinProfile = API.getProfile(player.getUniqueId());
                 if (joinProfile != null && !API.isInLobby(joinProfile)) {
-                    sendMessage(player, "&cYou must be in the lobby to join FFA.");
+                    sendMessage(player, MessagesConfig.FFA_MUST_BE_IN_LOBBY);
                     return true;
                 }
 
@@ -62,16 +62,18 @@ public class FfaCommand implements TabExecutor {
                 }
                 dev.yowsef.neptuneffa.session.FfaParticipant participant = currentSession.getParticipant(player.getUniqueId());
                 if (participant != null && participant.isCombatTagged() && !player.hasPermission("neptuneffa.admin")) {
-                    sendMessage(player, "&cYou cannot leave while in combat!");
+                    sendMessage(player, MessagesConfig.COMBAT_NO_LEAVE);
                     return true;
                 }
-                currentSession.removePlayer(player.getUniqueId(), "&cYou left FFA.", true);
+                currentSession.removePlayer(player.getUniqueId(), MessagesConfig.FFA_LEFT, true);
                 break;
             case "list":
-                sendMessage(player, "&c&lFFA Sessions:");
+                sendMessage(player, MessagesConfig.FFA_LIST_HEADER);
                 for (FfaSession s : FfaSessionService.getInstance().getSessions()) {
                     if (s.isOpen()) {
-                        sendMessage(player, "&7- &e" + s.getKit().getDisplayName() + " &7(" + s.getParticipants().size() + " players)");
+                        sendMessage(player, MessagesConfig.FFA_LIST_ENTRY
+                                .replace("{kit}", s.getKit().getDisplayName())
+                                .replace("{players}", String.valueOf(s.getParticipants().size())));
                     }
                 }
                 break;
@@ -79,36 +81,41 @@ public class FfaCommand implements TabExecutor {
                 Player target = player;
                 if (args.length > 1) {
                     if (!player.hasPermission("neptuneffa.stats.others")) {
-                        sendMessage(player, "&cYou do not have permission to view others' stats.");
+                        sendMessage(player, MessagesConfig.STATS_NO_PERMISSION);
                         return true;
                     }
                     target = org.bukkit.Bukkit.getPlayerExact(args[1]);
                     if (target == null) {
-                        sendMessage(player, "&cPlayer not found.");
+                        sendMessage(player, MessagesConfig.PLAYER_NOT_FOUND);
                         return true;
                     }
                 }
-                sendMessage(player, "&7&m--------------------");
+                sendMessage(player, MessagesConfig.STATS_SEPARATOR);
                 if (!API.isAvailable()) {
-                    sendMessage(player, "&cNeptune API is not available.");
-                    sendMessage(player, "&7&m--------------------");
+                    sendMessage(player, MessagesConfig.NEPTUNE_UNAVAILABLE);
+                    sendMessage(player, MessagesConfig.STATS_SEPARATOR);
                     break;
                 }
-                sendMessage(player, "&c&lFFA Stats: &e" + target.getName());
+                sendMessage(player, MessagesConfig.STATS_HEADER.replace("{player}", target.getName()));
                 for (IKit kit : API.get().getKitService().getAllKits()) {
                     if (FfaSessionService.getInstance().isKitFfaEligible(kit)) {
                         dev.yowsef.neptuneffa.config.FfaStatsManager.PlayerStats stats = dev.yowsef.neptuneffa.config.FfaStatsManager.get().getStats(target.getUniqueId(), kit.getName());
                         if (stats.getSessions() > 0) {
-                            sendMessage(player, "&fKit: &c" + kit.getDisplayName());
-                            sendMessage(player, "  &7Kills: &a" + stats.getKills() + " &7| Deaths: &c" + stats.getDeaths() + " &7| KDR: &b" + String.format("%.2f", (double) stats.getKills() / Math.max(1, stats.getDeaths())));
-                            sendMessage(player, "  &7Best Streak: &6" + stats.getBestStreak() + " &7| Sessions: &e" + stats.getSessions());
+                            sendMessage(player, MessagesConfig.STATS_KIT.replace("{kit}", kit.getDisplayName()));
+                            sendMessage(player, MessagesConfig.STATS_KILLS
+                                    .replace("{kills}", String.valueOf(stats.getKills()))
+                                    .replace("{deaths}", String.valueOf(stats.getDeaths()))
+                                    .replace("{kdr}", String.format("%.2f", (double) stats.getKills() / Math.max(1, stats.getDeaths()))));
+                            sendMessage(player, MessagesConfig.STATS_STREAK
+                                    .replace("{best_streak}", String.valueOf(stats.getBestStreak()))
+                                    .replace("{sessions}", String.valueOf(stats.getSessions())));
                         }
                     }
                 }
-                sendMessage(player, "&7&m--------------------");
+                sendMessage(player, MessagesConfig.STATS_SEPARATOR);
                 break;
             default:
-                sendMessage(player, "&cUsage: /ffa [leave|join <kit>|list|stats]");
+                sendMessage(player, MessagesConfig.FFA_USAGE);
                 break;
         }
 

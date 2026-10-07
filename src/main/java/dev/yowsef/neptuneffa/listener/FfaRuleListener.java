@@ -361,14 +361,14 @@ public class FfaRuleListener implements Listener {
         FfaParticipant p = session.getParticipant(player.getUniqueId());
         if (p != null && p.isCombatTagged() && !player.hasPermission("neptuneffa.admin")) {
             event.setCancelled(true);
-            dev.yowsef.neptuneffa.util.FormatUtil.sendMessage(player, "&cYou cannot use commands while in combat!");
+            dev.yowsef.neptuneffa.util.FormatUtil.sendMessage(player, dev.yowsef.neptuneffa.config.MessagesConfig.COMBAT_NO_COMMANDS);
             return;
         }
 
         // Handle /leave or /spawn commands to cleanly leave FFA
         if (label.equals("/leave") || label.equals("/spawn")) {
             event.setCancelled(true);
-            session.removePlayer(player.getUniqueId(), "&cYou left FFA.", true);
+            session.removePlayer(player.getUniqueId(), dev.yowsef.neptuneffa.config.MessagesConfig.FFA_LEFT, true);
         }
     }
 

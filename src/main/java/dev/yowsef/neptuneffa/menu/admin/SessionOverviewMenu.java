@@ -53,7 +53,7 @@ public class SessionOverviewMenu extends PaginatedMenu {
                 public void onClick(Player p, ClickType clickType) {
                     if (clickType.isRightClick()) {
                         session.getResetTask().setSecondsRemaining(0);
-                        dev.yowsef.neptuneffa.util.FormatUtil.sendMessage(p, "&aForced immediate reset for " + session.getKit().getName());
+                        dev.yowsef.neptuneffa.util.FormatUtil.sendMessage(p, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_RESET_FORCED.replace("{kit}", session.getKit().getName()));
                         p.closeInventory();
                     }
                 }

@@ -20,7 +20,7 @@ public class FfaAdminCommand implements TabExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.hasPermission("neptuneffa.admin")) {
-            sendMessage(sender, "&cNo permission.");
+            sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_NO_PERMISSION);
             return true;
         }
 
@@ -28,7 +28,7 @@ public class FfaAdminCommand implements TabExecutor {
             if (sender instanceof Player player) {
                 new dev.yowsef.neptuneffa.menu.admin.FfaAdminMainMenu().open(player);
             } else {
-                sendMessage(sender, "&cUsage: /ffaadmin [menu|reload|reset <kit>|addspawn <kit>|captureschematic <kit>]");
+                sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_USAGE);
             }
             return true;
         }
@@ -37,7 +37,7 @@ public class FfaAdminCommand implements TabExecutor {
             case "menu":
             case "gui":
                 if (!(sender instanceof Player player)) {
-                    sendMessage(sender, "&cPlayers only.");
+                    sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.PLAYERS_ONLY);
                     return true;
                 }
                 new dev.yowsef.neptuneffa.menu.admin.FfaAdminMainMenu().open(player);
@@ -47,39 +47,39 @@ public class FfaAdminCommand implements TabExecutor {
                 FfaConfig.get().reload();
                 dev.yowsef.neptuneffa.config.MessagesConfig.load();
                 FfaSessionService.getInstance().rebuildAll();
-                sendMessage(sender, "&aNeptuneFFA reloaded and sessions rebuilt.");
+                sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_RELOADED);
                 break;
             case "reset":
                 if (args.length < 2) {
-                    sendMessage(sender, "&cUsage: /ffaadmin reset <kit>");
+                    sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_RESET_USAGE);
                     return true;
                 }
                 FfaSession session = FfaSessionService.getInstance().getSession(args[1]);
                 if (session != null && session.getResetTask() != null) {
                     session.getResetTask().setSecondsRemaining(0);
-                    sendMessage(sender, "&aForcing reset for kit: " + args[1]);
+                    sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_RESET_FORCED.replace("{kit}", args[1]));
                 } else {
-                    sendMessage(sender, "&cNo active session for kit: " + args[1]);
+                    sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_NO_ACTIVE_SESSION.replace("{kit}", args[1]));
                 }
                 break;
             case "addspawn":
                 if (!(sender instanceof Player player)) {
-                    sendMessage(sender, "&cPlayers only.");
+                    sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.PLAYERS_ONLY);
                     return true;
                 }
                 if (args.length < 2) {
-                    sendMessage(sender, "&cUsage: /ffaadmin addspawn <kit>");
+                    sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_ADDSPAWN_USAGE);
                     return true;
                 }
                 if (!API.isAvailable()) {
-                    sendMessage(sender, "&cNeptune API is not available.");
+                    sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.NEPTUNE_UNAVAILABLE);
                     return true;
                 }
                 IKit kit = API.get().getKitService().getAllKits().stream()
                         .filter(k -> k.getName().equalsIgnoreCase(args[1]))
                         .findFirst().orElse(null);
                 if (kit == null) {
-                    sendMessage(sender, "&cKit not found.");
+                    sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_KIT_NOT_FOUND);
                     return true;
                 }
                 KitFfaSettings settings = FfaConfig.get().getOrCreateKitSettings(kit);
@@ -87,35 +87,35 @@ public class FfaAdminCommand implements TabExecutor {
                 // Invalidate spawn cache
                 settings.invalidateSpawnCache();
                 FfaConfig.get().saveKits();
-                sendMessage(sender, "&aAdded spawn point for " + kit.getName());
+                sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_SPAWN_ADDED_KIT.replace("{kit}", kit.getName()));
                 break;
             case "captureschematic":
                 if (args.length < 2) {
-                    sendMessage(sender, "&cUsage: /ffaadmin captureschematic <kit>");
+                    sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_CAPTURE_USAGE);
                     return true;
                 }
                 if (!API.isAvailable()) {
-                    sendMessage(sender, "&cNeptune API is not available.");
+                    sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.NEPTUNE_UNAVAILABLE);
                     return true;
                 }
                 IKit schematicKit = API.get().getKitService().getAllKits().stream()
                         .filter(k -> k.getName().equalsIgnoreCase(args[1]))
                         .findFirst().orElse(null);
                 if (schematicKit == null) {
-                    sendMessage(sender, "&cKit not found.");
+                    sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_KIT_NOT_FOUND);
                     return true;
                 }
                 KitFfaSettings schematicSettings = FfaConfig.get().getOrCreateKitSettings(schematicKit);
                 dev.lrxh.api.arena.IArena schematicArena = schematicSettings.resolveArena();
                 if (schematicArena == null || !schematicArena.isSetup() || !schematicArena.isEnabled()) {
-                    sendMessage(sender, "&cArena for this kit is not configured or enabled.");
+                    sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_ARENA_NOT_READY);
                     return true;
                 }
                 dev.yowsef.neptuneffa.util.FfaArenaRestorer.captureAndSave(schematicArena);
-                sendMessage(sender, "&aCapturing and saving clean schematic for arena: " + schematicArena.getName());
+                sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_CAPTURING.replace("{arena}", schematicArena.getName()));
                 break;
             default:
-                sendMessage(sender, "&cUnknown subcommand.");
+                sendMessage(sender, dev.yowsef.neptuneffa.config.MessagesConfig.ADMIN_UNKNOWN_SUBCOMMAND);
                 break;
         }
 

@@ -124,13 +124,13 @@ public class FfaSession {
         // Ensure arena is fully configured
         IArena arena = getArena();
         if (arena == null || !arena.isSetup() || !arena.isEnabled()) {
-            FormatUtil.sendMessage(player, "&cThis FFA arena is not configured. Contact an admin.");
+            FormatUtil.sendMessage(player, MessagesConfig.FFA_ARENA_NOT_CONFIGURED);
             return;
         }
 
         Location spawn = SpawnPointService.get().getSpawn(settings, cachedRandomSpawns);
         if (spawn == null) {
-            FormatUtil.sendMessage(player, "&cThis FFA arena has no valid spawn configured. Contact an admin.");
+            FormatUtil.sendMessage(player, MessagesConfig.FFA_ARENA_NO_SPAWN);
             return;
         }
 
@@ -248,8 +248,7 @@ public class FfaSession {
             new FfaRespawnTask(this, victim, victimP, delay).runTaskTimer(NeptuneFFA.getInstance(), 0L, 20L);
         } else {
             // Send to lobby immediately — player must manually rejoin
-            removePlayer(victim.getUniqueId(),
-                    "&cYou died. Use the FFA menu to rejoin.", true);
+            removePlayer(victim.getUniqueId(), MessagesConfig.FFA_DIED_LOBBY, true);
         }
     }
 
