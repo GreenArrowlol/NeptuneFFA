@@ -17,6 +17,7 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import dev.yowsef.neptuneffa.util.FfaArenaRestorer;
 import dev.yowsef.neptuneffa.util.FormatUtil;
 
 import javax.annotation.Nullable;
@@ -77,6 +78,20 @@ public class FfaSession {
         resetTask.runTaskTimer(NeptuneFFA.getInstance(), 0L, 20L);
     }
 
+    // With no schematic (FAWE missing) and worldgen off nothing resets the arena, so blocks players
+    // placed used to stay forever and after the reset nobody could break them anymore
+    private void clearPlacedBlocks() {
+        IArena arena = settings.resolveArena();
+        boolean restoredElsewhere = settings.isWorldgen() || (arena != null
+                && FfaArenaRestorer.isFaweAvailable() && FfaArenaRestorer.getSchematicFile(arena.getName()).exists());
+        if (!restoredElsewhere) {
+            for (Location loc : placedBlocks) {
+                if (loc.getWorld() != null) loc.getBlock().setType(org.bukkit.Material.AIR, false);
+            }
+        }
+        placedBlocks.clear();
+    }
+
     // Mark session as destroyed
     public void destroy() {
         this.destroyed = true;
@@ -91,7 +106,7 @@ public class FfaSession {
         }
         participants.clear();
         participantMap.clear();
-        placedBlocks.clear();
+        clearPlacedBlocks();
 
         IArena baseArena = settings.resolveArena();
         if (baseArena != null) {

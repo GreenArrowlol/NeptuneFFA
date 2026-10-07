@@ -13,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +22,7 @@ public class FfaConfig {
     // Singleton
     private static final FfaConfig INSTANCE = new FfaConfig();
 
-    private final Map<String, KitFfaSettings> kitSettings = new HashMap<>();
+    private final Map<String, KitFfaSettings> kitSettings = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     private int globalRespawnDelay;
     private boolean trackNeptuneKitStats;
     private int combatTagDurationSeconds;

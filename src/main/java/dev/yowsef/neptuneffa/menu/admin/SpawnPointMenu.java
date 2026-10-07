@@ -28,7 +28,6 @@ public class SpawnPointMenu extends PaginatedMenu {
     public Map<Integer, Button> getAllPagesButtons(Player player) {
         Map<Integer, Button> buttons = new HashMap<>();
         KitFfaSettings settings = FfaConfig.get().getOrCreateKitSettings(kit);
-        List<Location> spawns = settings.resolveSpawnPoints();
         List<String> rawSpawns = settings.getSpawnPointsRaw();
 
         buttons.put(0, new Button(0) {
@@ -51,11 +50,14 @@ public class SpawnPointMenu extends PaginatedMenu {
             }
         });
 
+        // walk the raw list so removing uses the right index. the resolved list skips broken
+        // entries, so its indexes didnt line up with the raw ones and the wrong spawn got removed
         int index = 1;
-        for (int i = 0; i < spawns.size(); i++) {
+        for (int i = 0; i < rawSpawns.size(); i++) {
             final int listIndex = i;
-            final Location loc = spawns.get(i);
-            
+            final Location loc = KitFfaSettings.parseLocation(rawSpawns.get(i));
+            if (loc == null) continue;
+
             buttons.put(index++, new Button(0) {
                 @Override
                 public ItemStack getItemStack(Player p) {
