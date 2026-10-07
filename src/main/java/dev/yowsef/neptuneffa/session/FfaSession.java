@@ -243,7 +243,7 @@ public class FfaSession {
 
                 // Heal on kill — restore HP and saturation as a kill reward if enabled
                 if (settings.isHealOnKill()) {
-                    org.bukkit.attribute.AttributeInstance maxHealthAttr = killer.getAttribute(org.bukkit.attribute.Attribute.GENERIC_MAX_HEALTH);
+                    org.bukkit.attribute.AttributeInstance maxHealthAttr = killer.getAttribute(org.bukkit.attribute.Attribute.MAX_HEALTH);
                     if (maxHealthAttr != null) {
                         killer.setHealth(maxHealthAttr.getValue());
                     } else {

@@ -24,8 +24,8 @@ NeptuneFFA allows server administrators to define FFA arenas per kit, manage liv
 
 ## 🛠️ Prerequisites
 Before installing NeptuneFFA, make sure your server meets the following requirements:
-* **Minecraft Version**: Spigot or Paper 1.21+
-* **Java Version**: Java 21 or higher
+* **Minecraft Version**: Paper 1.21.11 or 26.2 (same jar works on both)
+* **Java Version**: Java 21 or higher (26.x servers need Java 25 anyway)
 * **Required Dependency**: [Neptune Core] (must be installed and enabled on the server)
 
 ---
