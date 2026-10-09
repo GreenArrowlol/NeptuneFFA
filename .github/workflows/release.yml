@@ -74,6 +74,7 @@ jobs:
           modrinth-id: ${{ secrets.MODRINTH_PROJECT_ID }}
           version: ${{ steps.get_version.outputs.VERSION }}
           name: v${{ steps.get_version.outputs.VERSION }}
+          changelog: ${{ github.event.head_commit.message }}
           files: target/NeptuneFFA-${{ steps.get_version.outputs.VERSION }}.jar
           loaders: |
             spigot
